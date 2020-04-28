@@ -244,6 +244,55 @@ ORDER BY price DESC;
 SELECT * FROM products
 ORDER BY name;
 
+SELECT * FROM orders
+WHERE customer_id = 4
+ORDER BY order_time DESC;
+
+-- Tampilkan nama produk dan harga untuk semua product yang berasal dari Colombia atau Indonesia
+SELECT name, price, origin FROM products WHERE origin IN ('Colombia', 'Indonesia');
+
+-- Tampilkan semua kolom untuk order yang terjadi pada bulan februari untuk costumer dengan id 2 , 4, 6, 8
+SELECT * FROM orders WHERE order_time LIKE '2017-02-%' AND customer_id IN (2, 4, 6, 8) ORDER BY order_time;
+SELECT * FROM orders WHERE MONTH(order_time) = 2 AND customer_id IN (2, 4, 6, 8) ORDER BY order_time;
+
+-- Tampilkan nama depan, nama belakang, nomor tlp untuk customer yang nama belakang mengandung huruf 'ar'
+SELECT first_name, last_name, phone_number FROM customers WHERE last_name LIKE '%ar%';
+
+-- DISTINCT
+-- ########
+-- Menampilkan data secara unique
+
+-- Satu kolom
+SELECT DISTINCT origin FROM products;
+-- Lebih dari satu kolom
+SELECT DISTINCT price, origin FROM products WHERE price >= 2.60 ORDER BY price;
+
+-- LIMIT & OFFSET
+-- ##############
+-- LIMIT : Membatasi jumlah data
+-- OFFSET : Skip data
+
+SELECT id, name from products LIMIT 3; -- Espresso , Macchiato, Cappucino
+
+SELECT id, name from products LIMIT 3 OFFSET 2; -- Cappucino, Latte, Americano
+
+
+-- ALIAS
+-- #####
+-- Mengubah nama kolom saat ditampilkan
+
+SELECT name AS Kopi, price AS `Harga 2019`, ROUND(price + (price * 0.1), 2)  AS `Harga 2020` FROM products;
+
+SELECT name `Nama`, price `Harga`, origin `Asal` FROM products;
+
+SELECT ROUND(3.75595747393, 2); -- 3.76
+
+-- Exercise
+-- Tampilkan semua kolom untuk 5 order pertama yang dilakukan oleh customer dengan id 4
+
+-- Tampilkan product id dan tanggal order untuk product id berapa saja yang berhasil terjual pada bulan februari
+
+-- Tampilkan semua kolom untuk orderan terakhir yang dilakukan oleh customer dengan id 4
 
 
 
@@ -262,24 +311,6 @@ ORDER BY name;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- PLUS 5 : Yogi
 
 
 
