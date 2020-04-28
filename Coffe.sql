@@ -169,17 +169,118 @@ WHERE origin IS NOT NULL AND price = 3.00;
 -- EXERCISE
 -- ########
 -- Tampilkan nama depan dan nomor handphone untuk perempuan yang memiliki nama belakang = bluth
-
+SELECT first_name, phone_number FROM customers WHERE gender = 'F' AND last_name = 'Bluth';
 -- Tampilkan nama product yang memiliki harga lebih besar dari 3.00 atau berasal dari Sri Lanka
-
+SELECT name FROM products WHERE price > 3.00 OR origin = 'Sri Lanka';
 -- Tampilkan semua kolom untuk laki - laki yang tidak memiliki nomor handphone
-
+SELECT * FROM customers WHERE gender = 'M' AND phone_number IS NULL;
 -- Tampilkan semua kolom untuk customer yang memiliki nama belakang antara 'Taylor', 'Bluth', 'Armstrong';
+SELECT * FROM customers WHERE last_name = 'Taylor' OR last_name = 'Bluth' OR last_name = 'Armstrong';
+
+
+-- IN
+-- ##
+-- Solusi OR yang banyak
+-- Tampilkan semua kolom untuk customer yang memiliki nama belakang antara 'Taylor', 'Bluth', 'Armstrong';
+SELECT * FROM customers WHERE last_name IN ('Taylor', 'Bluth', 'Armstrong');
+
+-- NOT IN
+-- ######
+-- Tampilkan semua kolom untuk customer yang nama belakangnya selain 'Taylor' 'Bluth', 'Armstrong';
+SELECT * FROM customers WHERE last_name != 'Taylor' AND last_name != 'Bluth' AND last_name != 'Armstrong';
+SELECT * FROM customers WHERE last_name NOT IN ('Taylor', 'Bluth', 'Armstrong');
+
+
+-- BETWEEN
+-- #######
+-- Tampikan id produk, id customer tanggal order untuk tanggal order dari 1 sampai 6 januari
+SELECT product_id, customer_id, order_time
+FROM orders
+WHERE order_time BETWEEN '2017-01-01' AND '2017-01-07';
+
+-- Tampilkan id produk, id customer tanggal order untuk customer yang memiliki id antara 5 sampai 11
+SELECT product_id, customer_id, order_time
+FROM orders
+WHERE customer_id BETWEEN 5 AND 11;
+
+-- LIKE (case insensitive)
+-- % , karakter apapun , dan berapapun
+-- _, krakter apapun, satu karakter
+
+-- Customer yang memiliki huruf o, sebelum dan sesudah huruf o boleh ada karakter apapun dan berapapun
+SELECT *  FROM customers
+WHERE first_name LIKE '%o%';
+-- Customer yang memiliki huruf o, sebelum dan sesudah huruf o hanya boleh ada satu karakter apapun
+SELECT *  FROM customers
+WHERE first_name LIKE '_o_';
+-- Customer yang memiliki huruf o, sebelum huruf hanya ada boleh satu karakter dan sesudah huruf o  boleh ada berapapun karakter
+SELECT *  FROM customers
+WHERE first_name LIKE '_o%';
+-- Customer yang memiliki huruf o, sebelum  huruf o boleh ada karakter berapapun namun hanya ada 1 karakter di belakang
+SELECT *  FROM customers
+WHERE last_name LIKE '%o_';
+-- Customer yang nama belakangnya memiliki huruf terakhir s ,
+SELECT *  FROM customers
+WHERE last_name LIKE '%s';
+-- Customer yang nama belakangnya memiliki huruf awal W ,
+SELECT *  FROM customers
+WHERE last_name LIKE 'W%';
+
+
+-- ORDER BY
+-- ########
+-- Mengurutkan data berdasarkan kolom tertentu
+-- ASC / ASCENDING : kecil ke besar (default)
+-- DESC / DESCENDING : besar ke kecil
+
+-- Mengurutkan produk berdasarkan harga
+SELECT * FROM products
+ORDER BY price;
+
+SELECT * FROM products
+ORDER BY price DESC;
+
+-- Mengurutkan data berdasarkan nama
+SELECT * FROM products
+ORDER BY name;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 -- PLUS 5 : Yogi
+
 
 
 
