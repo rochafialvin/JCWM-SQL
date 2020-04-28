@@ -290,7 +290,7 @@ SELECT ROUND(3.75595747393, 2); -- 3.76
 -- Exercise
 -- Tampilkan semua kolom untuk 3 order pertama yang dilakukan oleh customer dengan id 4
 
--- Tampilkan product id untuk product id berapa saja yang berhasil terjual pada bulan februari
+-- Tampilkan product id berapa saja yang berhasil terjual pada bulan februari
 
 -- Tampilkan semua kolom untuk orderan terakhir yang dilakukan oleh customer dengan id 4
 
