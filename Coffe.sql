@@ -343,26 +343,68 @@ create table osis (
 );
 
 -- INNER JOIN
+-- Menampilkan data yang ada di kedua tabel
 SELECT *
 FROM siswa s
 INNER JOIN osis o ON s.id = o.siswa_id;
 
 -- LEFT JOIN
+-- Akan menampilkan semua data dari tabel kiri (siswa), menampilkan data dari tabel kanan (osis) hanya untuk yang terhubung dengan tabel kiri
 SELECT nama, jabatan
-FROM siswa s
-LEFT JOIN osis o ON s.id = o.siswa_id;
+FROM siswa s LEFT JOIN osis o ON s.id = o.siswa_id;
+-- Semua siswa taampil
 
-SELECT nama, jabatan
-FROM osis o
-LEFT JOIN siswa s ON s.id = o.siswa_id;
+-- Akan menampilkan semua data dari tabel kiri (osis), menampilkan data dari tabel kanan (siswa) hanya untuk yang terhubung dengan tabel kiri
+SELECT jabatan, nama
+FROM siswa s
+RIGHT JOIN osis o ON o.siswa_id = s.id;
+-- Semua osis tampil
 
 -- RIGHT JOIN
+-- Akan menampilkan semua data dari tabel kanan (siswa), menampilkan data dari tabel kiri (osis) hanya untuk yang terhubung dengan tabel kanan (siswa)
 SELECT nama, jabatan
-FROM osis o
-RIGHT JOIN siswa s ON s.id = o.siswa_id;
+FROM osis o RIGHT JOIN siswa s ON s.id = o.siswa_id;
+-- Semua siswa tampil
 
+-- INNER JOIN MORE THAN TWO TABLES
+-- ###############################
 
+-- Join tiga tabel
+SELECT 
+	o.id, 
+    c.first_name, c.gender,
+    p.name, 
+    o.order_time
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id;
 
+-- Join tiga tabel + alias + kolom baru (Ppn)
+SELECT 
+	o.id `No Antrian`, 
+    c.first_name `Nama`, c.gender `Jenis Kelamin`,
+    p.name `Pesanan`, p.price `Harga`, ROUND(p.price + (p.price * 0.025), 2) `Plus PPN`,
+    o.order_time `Waktu Pemesanan`
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id;
+
+-- Join tiga tabel + alias + kolom baru + Where
+SELECT 
+	o.id `No Antrian`, 
+    c.first_name `Nama`, c.gender `Jenis Kelamin`,
+    p.name `Pesanan`, p.price `Harga`, ROUND(p.price + (p.price * 0.025), 2) `Plus PPN`,
+    o.order_time `Waktu Pemesanan`
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id
+WHERE c.first_name = 'Chris' LIMIT 3;
+
+-- Tampilkan Order id, First name, Last name, phone number, untuk yang customer yang membeli latte membeli 'Latte'
+
+-- Tampilkan product name and order time for filter coffees sold between January 15th 2017 and February 14th 2017
+
+-- Nama Produk, Harga, Waktu Order, Di beli oleh perempuan, penjualan 15 januari - 14 februari di urutkan berdasarkan waktu order
 
 
 
