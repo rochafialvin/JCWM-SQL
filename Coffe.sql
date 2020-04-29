@@ -15,7 +15,8 @@ SHOW TABLES;
 CREATE TABLE products (
 	id INT AUTO_INCREMENT PRIMARY KEY, -- AUTO_INCREMENT, nilainya terus bertambah secara otomatis ketika ada data baru masuk.
     name VARCHAR(30),
-    price DECIMAL(3, 2), -- 2.00, 3.14, 2.25 , 4.16
+    price DECIMAL(3, 2), -- tiga digit total dan dua digit di belakang koma, 2.00, 3.14, 2.25 , 4.16 || 3 digit tersebut adalah jumlah digit maksimal, artinya kita 
+    -- DECIMAL(5,2) maka digit maksimal yang dapat disimpan adalah 5 , artinya bisa menyimpan digit dibawah itu, contoh 1.45 , 23.88 , 765.89 , tidak bisa jika nilai seperti ini 1453.66 (total digitnya 6)
 	origin VARCHAR(20)
 );
 
@@ -283,28 +284,82 @@ SELECT id, name from products LIMIT 3 OFFSET 2; -- Cappucino, Latte, Americano
 
 SELECT name AS Kopi, price AS `Harga 2019`, ROUND(price + (price * 0.1), 2)  AS `Harga 2020` FROM products;
 
+SELECT name Nama, price Harga, origin Asal FROM products;
+
 SELECT name `Nama`, price `Harga`, origin `Asal` FROM products;
 
 SELECT ROUND(3.75595747393, 2); -- 3.76
 
 -- Exercise
 -- Tampilkan semua kolom untuk 3 order pertama yang dilakukan oleh customer dengan id 4
+SELECT * FROM orders WHERE customer_id = 4 LIMIT 3;
 
 -- Tampilkan product id berapa saja yang berhasil terjual pada bulan februari
+SELECT DISTINCT product_id FROM orders WHERE MONTH(order_time) = 2 ORDER BY product_id;
 
 -- Tampilkan semua kolom untuk orderan terakhir yang dilakukan oleh customer dengan id 4
+SELECT * FROM orders WHERE customer_id = 4 ORDER BY order_time DESC LIMIT 1;
 
 
 
+-- JOIN : INNER | LEFT | RIGHT
+-- ####
+-- Menggabungkan tabel untuk mendapatkan informasi yang lebih lengkap
+
+-- Menampilkan nama produk dan waktu order
+SELECT name, order_time
+FROM products
+JOIN orders ON products.id = orders.product_id;
+
+-- Join kemudian di Limit
+SELECT name, order_time
+FROM products
+JOIN orders ON products.id = orders.product_id
+WHERE name = 'Latte' LIMIT 4;
+
+-- Join menggunakan Alias
+SELECT name `Kopi`, order_time `Waktu Pemesanan`
+FROM products
+JOIN orders ON products.id = orders.product_id
+WHERE name = 'Latte' LIMIT 4;
+
+-- Alias table dengan satu huruf atau lebih
+SELECT p.name, o.order_time
+FROM products p
+JOIN orders o ON p.id = o.customer_id;
 
 
+create table siswa (
+	id int primary key auto_increment,
+    nama varchar(20),
+    kelas int
+);
 
+create table osis (
+	id int auto_increment primary key,
+    siswa_id int,
+    jabatan varchar(20),
+    constraint FK_SiswaId foreign key (siswa_id) references siswa(id) on delete set null on update cascade
+);
 
+-- INNER JOIN
+SELECT *
+FROM siswa s
+INNER JOIN osis o ON s.id = o.siswa_id;
 
+-- LEFT JOIN
+SELECT nama, jabatan
+FROM siswa s
+LEFT JOIN osis o ON s.id = o.siswa_id;
 
+SELECT nama, jabatan
+FROM osis o
+LEFT JOIN siswa s ON s.id = o.siswa_id;
 
-
-
+-- RIGHT JOIN
+SELECT nama, jabatan
+FROM osis o
+RIGHT JOIN siswa s ON s.id = o.siswa_id;
 
 
 
