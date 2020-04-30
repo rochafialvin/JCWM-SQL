@@ -401,13 +401,30 @@ JOIN products p ON p.id = o.product_id
 WHERE c.first_name = 'Chris' LIMIT 3;
 
 -- Tampilkan Order id, First name, Last name, phone number, untuk yang customer yang membeli latte membeli 'Latte'
+SELECT 
+	o.id , 
+	c.first_name, c.last_name, c.phone_number
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id
+WHERE p.name = 'Latte';
 
--- Tampilkan product name and order time for filter coffees sold between January 15th 2017 and February 14th 2017
+-- Tampilkan product name and order time for kopi bernama 'Filter' terjual antara 15 januari hingga 14 februari
+SELECT 
+	p.name,
+    o.order_time
+FROM products p
+JOIN orders o ON p.id = o.product_id
+WHERE p.name = 'Filter' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-14';
 
--- Nama Produk, Harga, Waktu Order, Di beli oleh perempuan, penjualan 15 januari - 14 februari di urutkan berdasarkan waktu order
-
-
-
+-- Tampilkan Nama Produk, Harga, Waktu Order, yang di beli oleh perempuan, penjualan 15 januari - 14 februari di urutkan berdasarkan waktu order
+SELECT 
+	p.name, p.price,
+    o.order_time
+FROM products p
+JOIN orders o ON p.id = o.product_id
+JOIN customers c ON c.id = o.customer_id
+WHERE c.gender = 'F' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-14';
 
 
 
