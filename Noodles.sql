@@ -250,10 +250,10 @@ SELECT * FROM customers WHERE last_name NOT IN ('Smith', 'Jordan', 'Armstrong');
 
 -- BETWEEN
 -- #######
--- Tampikan id produk, id customer tanggal order untuk tanggal order dari 1 sampai 6 januari
+-- Tampikan id produk, id customer tanggal order untuk tanggal order dari 1 sampai 7 januari
 SELECT product_id, customer_id, order_time
 FROM orders
-WHERE order_time BETWEEN '2017-01-01' AND '2017-01-07';
+WHERE order_time BETWEEN '2017-01-01' AND '2017-01-07 23:59:59';
 
 -- Tampilkan id produk, id customer tanggal order untuk customer yang memiliki id antara 5 sampai 11
 SELECT product_id, customer_id, order_time
@@ -453,7 +453,7 @@ SELECT
     o.order_time
 FROM products p
 JOIN orders o ON p.id = o.product_id
-WHERE p.variant = 'Mi Cakalang' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15';
+WHERE p.variant = 'Mi Cakalang' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15 23:59:59';
 
 -- Tampilkan Nama Produk, Harga, Waktu Order, yang di beli oleh perempuan, penjualan 15 januari - 14 februari di urutkan berdasarkan waktu order
 SELECT 
@@ -462,4 +462,4 @@ SELECT
 FROM products p
 JOIN orders o ON p.id = o.product_id
 JOIN customers c ON c.id = o.customer_id
-WHERE c.gender = 'F' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15';
+WHERE c.gender = 'F' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15 23:59:59';
