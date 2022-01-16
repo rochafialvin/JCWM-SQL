@@ -232,7 +232,161 @@ SELECT first_name, phone_number FROM customers WHERE gender = 'F' AND last_name 
 SELECT variant FROM products WHERE price > 3.50 OR origin = 'Medan';
 -- Tampilkan semua kolom untuk laki - laki yang tidak memiliki nomor handphone
 SELECT * FROM customers WHERE gender = 'M' AND phone_number IS NULL;
--- Tampilkan semua kolom untuk customer yang memiliki nama belakang antara 'Taylor', 'Jordan', 'Armstrong';
-SELECT * FROM customers WHERE last_name = 'Taylor' OR last_name = 'Jordan' OR last_name = 'Armstrong';
+-- Tampilkan semua kolom untuk customer yang memiliki nama belakang antara 'George', 'Jordan', 'Armstrong';
+SELECT * FROM customers WHERE last_name = 'Smith' OR last_name = 'Jordan' OR last_name = 'Armstrong';
+
+
+-- IN
+-- ##
+-- Solusi OR yang banyak
+-- Tampilkan semua kolom untuk customer yang memiliki nama belakang antara 'Smith', 'Jordan', 'Armstrong';
+SELECT * FROM customers WHERE last_name IN ('Smith', 'Jordan', 'Armstrong');
+
+-- NOT IN
+-- ######
+-- Tampilkan semua kolom untuk customer yang nama belakangnya selain 'Smith' 'Jordan', 'Armstrong';
+SELECT * FROM customers WHERE last_name != 'Smith' AND last_name != 'Jordan' AND last_name != 'Armstrong';
+SELECT * FROM customers WHERE last_name NOT IN ('Smith', 'Jordan', 'Armstrong');
+
+-- BETWEEN
+-- #######
+-- Tampikan id produk, id customer tanggal order untuk tanggal order dari 1 sampai 6 januari
+SELECT product_id, customer_id, order_time
+FROM orders
+WHERE order_time BETWEEN '2017-01-01' AND '2017-01-07';
+
+-- Tampilkan id produk, id customer tanggal order untuk customer yang memiliki id antara 5 sampai 11
+SELECT product_id, customer_id, order_time
+FROM orders
+WHERE customer_id BETWEEN 5 AND 11;
+
+-- LIKE (case insensitive)
+-- % , karakter apapun , dan berapapun
+-- _ , krakter apapun, satu karakter
+ 
+-- Customer yang memiliki huruf o, sebelum dan sesudah huruf o boleh ada karakter apapun dan berapapun
+SELECT *  FROM customers
+WHERE first_name LIKE '%o%';
+-- Customer yang memiliki huruf o, sebelum dan sesudah huruf o hanya boleh ada satu karakter apapun
+SELECT *  FROM customers
+WHERE first_name LIKE '_o_';
+-- Customer yang memiliki huruf o, sebelum huruf hanya ada boleh satu karakter dan sesudah huruf o  boleh ada berapapun karakter
+SELECT *  FROM customers
+WHERE first_name LIKE '_o%';
+-- Customer yang memiliki huruf o, sebelum  huruf o boleh ada karakter berapapun namun hanya ada 1 karakter di belakang
+SELECT *  FROM customers
+WHERE last_name LIKE '%o_';
+-- Customer yang nama belakangnya memiliki huruf terakhir s ,
+SELECT *  FROM customers
+WHERE last_name LIKE '%s';
+-- Customer yang nama belakangnya memiliki huruf awal W ,
+SELECT *  FROM customers
+WHERE last_name LIKE 'W%';
+
+-- ORDER BY
+-- ########
+-- Mengurutkan data berdasarkan kolom tertentu
+-- ASC / ASCENDING : kecil ke besar (default)
+-- DESC / DESCENDING : besar ke kecil
+
+-- Mengurutkan produk berdasarkan harga
+SELECT * FROM products
+ORDER BY price;
+
+SELECT * FROM products
+ORDER BY price DESC;
+
+-- Mengurutkan data berdasarkan nama
+SELECT * FROM products
+ORDER BY name;
+
+SELECT * FROM orders
+WHERE customer_id = 4
+ORDER BY order_time DESC;
+
+SELECT * FROM products;
+
+-- Tampilkan nama produk dan harga untuk semua product yang berasal dari DKI atau Manado
+SELECT variant, price, origin FROM products WHERE origin IN ('DKI', 'Manado');
+
+-- Tampilkan semua kolom untuk order yang terjadi pada bulan februari untuk costumer dengan id 2 , 4, 6, 8
+SELECT * FROM orders WHERE order_time LIKE '2017-02-%' AND customer_id IN (2, 4, 6, 8) ORDER BY order_time;
+SELECT * FROM orders WHERE MONTH(order_time) = 2 AND customer_id IN (2, 4, 6, 8) ORDER BY order_time;
+
+-- Tampilkan nama depan, nama belakang, nomor tlp untuk customer yang nama belakang mengandung huruf 'ar'
+SELECT first_name, last_name, phone_number FROM customers WHERE last_name LIKE '%ar%';
+
+-- DISTINCT
+-- ########
+-- Menampilkan data secara unique
+
+-- Satu kolom
+SELECT DISTINCT origin FROM products;
+
+-- Ubah harga soto banjang menjadi 3.6 untuk menampilkan nilai 3.6 dan Banjar hanya muncul satu kali
+-- Lebih dari satu kolom
+SELECT DISTINCT price, origin FROM products WHERE price >= 2.60 ORDER BY price;
+
+-- LIMIT & OFFSET
+-- ##############
+-- LIMIT : Membatasi jumlah data
+-- OFFSET : Skip data
+
+SELECT id, variant from products LIMIT 3; -- Mi Goreng, Soto Banjar, Soto Banjar Limau Kulit
+
+SELECT id, variant from products LIMIT 3 OFFSET 2; -- Soto Banjar Limau Kulit, Mi Cakalang, Mi Goreng Cakalang
+
+-- ALIAS
+-- #####
+-- Mengubah nama kolom saat ditampilkan
+
+SELECT variant AS Rasa, price AS `Harga 2019`, ROUND(price + (price * 0.1), 2)  AS `Harga 2020` FROM products;
+
+SELECT variant Rasa, price Harga, origin Asal FROM products;
+
+-- Only on Mysql, not standard SQL, PostgreSQL cant do this.
+SELECT name `Nama`, price `Harga`, origin `Asal` FROM products;
+
+SELECT ROUND(3.75595747393, 2); -- 3.76
+
+-- Exercise
+-- Tampilkan semua kolom untuk 3 order pertama yang dilakukan oleh customer dengan id 4
+SELECT * FROM orders WHERE customer_id = 4 LIMIT 3;
+
+-- Tampilkan product id berapa saja yang berhasil terjual pada bulan februari
+SELECT DISTINCT product_id FROM orders WHERE MONTH(order_time) = 2 ORDER BY product_id;
+
+-- Tampilkan semua kolom untuk orderan terakhir yang dilakukan oleh customer dengan id 4
+SELECT * FROM orders WHERE customer_id = 4 ORDER BY order_time DESC LIMIT 1;
+
+
+-- JOIN : INNER | LEFT | RIGHT
+-- ####
+-- Menggabungkan tabel untuk mendapatkan informasi yang lebih lengkap
+
+-- Menampilkan nama produk dan waktu order
+-- Urutan akan mengikuti table yang pertama disebut yaitu products
+SELECT variant, order_time
+FROM products
+JOIN orders ON products.id = orders.product_id;
+
+-- Join kemudian di Limit
+SELECT variant, order_time
+FROM products
+JOIN orders ON products.id = orders.product_id
+WHERE variant = 'Mi Cakalang' LIMIT 4;
+
+-- Join menggunakan Alias
+SELECT variant `Rasa`, order_time `Waktu Pemesanan`
+FROM products
+JOIN orders ON products.id = orders.product_id
+WHERE variant = 'Mi Cakalang' LIMIT 4;
+
+-- Alias table dengan satu huruf atau lebih
+SELECT p.variant, o.order_time
+FROM products p
+JOIN orders o ON p.id = o.customer_id;
+
+SELECT * FROM products p RIGHT JOIN orders o ON p.id = o.product_id;
 
 
