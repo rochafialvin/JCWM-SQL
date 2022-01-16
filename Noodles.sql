@@ -360,13 +360,20 @@ SELECT DISTINCT product_id FROM orders WHERE MONTH(order_time) = 2 ORDER BY prod
 SELECT * FROM orders WHERE customer_id = 4 ORDER BY order_time DESC LIMIT 1;
 
 
--- JOIN : INNER | LEFT | RIGHT
+-- JOIN : INNER | LEFT (OUTER) | RIGHT (OUTER) | FULL (OUTER)
 -- ####
 -- Menggabungkan tabel untuk mendapatkan informasi yang lebih lengkap
 
+-- 1 , 3, 4, 5, 6, 7
+-- SELECT * FROM orders;
+-- Tampilkan product yang belum pernah di order 
+-- SELECT * FROM products WHERE id NOT IN (SELECT DISTINCT product_id FROM orders WHERE product_id IS NOT NULL );
+-- SELECT DISTINCT product_id FROM orders;
+-- SELECT * FROM products JOIN orders ON products.id = orders.product_id;
+
 -- Menampilkan nama produk dan waktu order
 -- Urutan akan mengikuti table yang pertama disebut yaitu products
-SELECT variant, order_time
+SELECT products.id, variant, order_time
 FROM products
 JOIN orders ON products.id = orders.product_id;
 
@@ -387,6 +394,72 @@ SELECT p.variant, o.order_time
 FROM products p
 JOIN orders o ON p.id = o.customer_id;
 
-SELECT * FROM products p RIGHT JOIN orders o ON p.id = o.product_id;
+-- Tampilkan semua product berserta informasi ordernya.
+SELECT products.id, variant, order_time
+FROM products
+LEFT JOIN orders ON products.id = orders.product_id;
 
+-- Tampilkan semua orderan beserta informasi productnya.
+SELECT products.id, variant, order_time
+FROM products
+RIGHT JOIN orders ON products.id = orders.product_id;
 
+-- INNER JOIN MORE THAN TWO TABLES
+-- ###############################
+
+-- Join tiga tabel
+SELECT 
+	o.id, 
+    c.first_name, c.gender,
+    p.variant, 
+    o.order_time
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id;
+
+-- Join tiga tabel + alias + kolom baru (Ppn)
+SELECT 
+	o.id `No Antrian`, 
+    c.first_name `Nama`, c.gender `Jenis Kelamin`,
+    p.variant `Pesanan`, p.price `Harga`, ROUND(p.price + (p.price * 0.025), 2) `Plus PPN`,
+    o.order_time `Waktu Pemesanan`
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id;
+
+-- Join tiga tabel + alias + kolom baru + Where
+SELECT 
+	o.id `No Antrian`, 
+    c.first_name `Nama`, c.gender `Jenis Kelamin`,
+    p.variant `Pesanan`, p.price `Harga`, ROUND(p.price + (p.price * 0.025), 2) `Plus PPN`,
+    o.order_time `Waktu Pemesanan`
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id
+WHERE c.first_name = 'Hinata' LIMIT 3;
+
+-- Tampilkan Order id, First name, Last name, phone number, untuk yang customer yang membeli Soto Banjar
+SELECT 
+	o.id , 
+	c.first_name, c.last_name, c.phone_number
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN products p ON p.id = o.product_id
+WHERE p.variant = 'Soto Banjar';
+
+-- Tampilkan nama variant dan waktu order untuk Mi Cakalang yang terjual antara 15 januari hingga 14 februari
+SELECT 
+	p.variant,
+    o.order_time
+FROM products p
+JOIN orders o ON p.id = o.product_id
+WHERE p.variant = 'Mi Cakalang' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15';
+
+-- Tampilkan Nama Produk, Harga, Waktu Order, yang di beli oleh perempuan, penjualan 15 januari - 14 februari di urutkan berdasarkan waktu order
+SELECT 
+	p.variant, p.price,
+    o.order_time
+FROM products p
+JOIN orders o ON p.id = o.product_id
+JOIN customers c ON c.id = o.customer_id
+WHERE c.gender = 'F' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15';
