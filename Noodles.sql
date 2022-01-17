@@ -472,3 +472,7 @@ ALTER TABLE orders
 ADD CONSTRAINT FK_ProductId
 FOREIGN KEY (product_id) REFERENCES products(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 -- Then try to update and delete for different situation
+
+-- Add created_at and updated_at columns on orders table
+ALTER TABLE orders
+ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP(),updated_at DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
