@@ -463,3 +463,12 @@ FROM products p
 JOIN orders o ON p.id = o.product_id
 JOIN customers c ON c.id = o.customer_id
 WHERE c.gender = 'F' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15 23:59:59';
+
+-- Drop foreign key
+ALTER TABLE orders
+DROP FOREIGN KEY FK_ProductId;
+-- Add foreign key
+ALTER TABLE orders
+ADD CONSTRAINT FK_ProductId
+FOREIGN KEY (product_id) REFERENCES products(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+-- Then try to update and delete for different situation
