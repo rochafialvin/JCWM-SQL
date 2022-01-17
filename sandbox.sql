@@ -14,3 +14,12 @@ ADD  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 ALTER TABLE orders
 DROP  created_at ,
 DROP updated_at ;
+
+
+-- LATER SHOULD ADD THIS
+-- Tampilkan pesanan yang dilakukan oleh customer dengan rentan usia 18 - 30 (Kita tidak memiliki column age).
+SELECT * FROM orders o JOIN customers c ON o.customer_id = c.id
+WHERE age BETWEEN 18 AND 30;
+
+-- Selain dari top 10.
+💘

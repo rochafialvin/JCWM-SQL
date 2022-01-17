@@ -306,6 +306,7 @@ ORDER BY order_time DESC;
 
 SELECT * FROM products;
 
+--Exercise
 -- Tampilkan nama produk dan harga untuk semua product yang berasal dari DKI atau Manado
 SELECT variant, price, origin FROM products WHERE origin IN ('DKI', 'Manado');
 
@@ -464,6 +465,9 @@ JOIN orders o ON p.id = o.product_id
 JOIN customers c ON c.id = o.customer_id
 WHERE c.gender = 'F' AND o.order_time BETWEEN '2017-01-15' AND '2017-02-15 23:59:59';
 
+-- ON UPDATE ON DELETE (CASCADE, SET NULL, RESTRICT)
+-- #################################################
+
 -- Drop foreign key
 ALTER TABLE orders
 DROP FOREIGN KEY FK_ProductId;
@@ -473,6 +477,119 @@ ADD CONSTRAINT FK_ProductId
 FOREIGN KEY (product_id) REFERENCES products(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 -- Then try to update and delete for different situation
 
+-- CREATED_AT, UPDATED_AT
+-- #####################
 -- Add created_at and updated_at columns on orders table
 ALTER TABLE orders
-ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP(),updated_at DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+ADD  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+ADD  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+
+-- ADD COLUMN AGE
+ALTER TABLE customers
+ADD age INT;
+
+-- MODIFY COLUMN
+ALTER TABLE customer
+MODIFY COLUMN age NOT NULL;
+
+
+-- AGGREGATE FUNCTION 💘 GROUP BY
+-- AGGREGATE FUNCTION 💘 GROUP BY
+USE noodles;
+
+-- AVG (Menghitung rata - rata)
+
+-- Rata2 harga mi
+SELECT AVG(price) AS average_price FROM products;
+
+-- Rata2 harga mi dibulatkan dengan dua digit di belakang koma
+SELECT ROUND(AVG(price), 2) AS average_price FROM products;
+
+-- Rata2 harga mi masing - masing daerah (origin)
+SELECT origin, AVG(price) AS average_price FROM products GROUP BY origin;
+
+-- COUNT (Menghitung jumlah data)
+
+-- Jumlah data pada kolom origin
+SELECT COUNT(origin) FROM products;
+
+-- Jumlah variant masing - masing daerah (origin)
+SELECT origin, COUNT(id) AS total_variant FROM products GROUP BY origin;
+
+-- Jumlah order masing - masing user, urutkan dari yan
+SELECT
+	first_name, last_name,
+	count(*)
+FROM orders
+JOIN customers ON orders.customer_id = customers.id
+GROUP BY first_name, last_name;
+
+-- Tampilkan top 3 customer pada bulan januari
+SELECT 
+	first_name, last_name,
+	count(*) AS total
+FROM orders o
+JOIN customers c ON c.id = o.customer_id
+WHERE MONTH(order_time) = 1
+GROUP BY first_name, last_name
+ORDER BY total DESC;
+
+-- SUM
+
+-- Total pendapatan seluruhnya
+SELECT SUM(price) AS total_amount
+FROM orders o
+JOIN products p ON p.id = o.product_id
+ORDER BY total_amount DESC;
+
+-- Total pendapatan yang dihasilkan dari per masing - masing product, urutkan dari yang terbesar
+SELECT variant, SUM(price) AS total_amount
+FROM orders o
+JOIN products p ON p.id = o.product_id
+GROUP BY variant
+ORDER BY total_amount DESC;
+
+SELECT 
+	first_name, last_name,
+	order_time
+FROM orders o
+JOIN customers c ON c.id = o.customer_id
+WHERE MONTH(order_time) = 1;
+
+-- MIN and MAX
+
+-- sum price dari setiap variant
+CREATE VIEW sum_price_per_variant AS SELECT variant, SUM(price) AS total_amount
+FROM orders o 
+JOIN products p ON p.id = o.product_id
+GROUP BY variant;
+
+DROP VIEW sum_price_per_variant;
+
+-- sum price terendah (sub query)
+SELECT MIN(total_amount) FROM sum_price_per_variant;
+
+-- sum price tertinggi (sub query)
+SELECT MAX(total_amount) FROM sum_price_per_variant;
+
+-- sum price terendah berikut dengan nama variant (sub query)
+SELECT variant, total_amount
+FROM sum_price_per_variant
+ORDER BY total_amount LIMIT 1;
+
+-- sum price tertinggi berikut dengan nama variant (sub query)
+SELECT variant, total_amount
+FROM sum_price_per_variant
+ORDER BY total_amount DESC LIMIT 1;
+
+
+-- Exercise
+-- Jumlah origin (unique)
+SELECT COUNT(origin) total_unique_products FROM products;
+-- Jumlah customer dikelompokkan berdasarkan umur.
+SELECT age, COUNT(*) AS total FROM customers GROUP BY age;
+-- Rata2 umur pelanggan
+SELECT AVG(age) AS average_age FROM customers;
+-- Rata2 umur wanita dan pria.
+SELECT gender, AVG(age) AS average_age FROM customers GROUP BY gender;
